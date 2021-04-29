@@ -1,0 +1,32 @@
+# Poznámky k návrhu desky skokové předregulace
+
+## Změny v konstrukci
+
+Konstrukce není moje. Hodnoty součástek jsou uvedeny pouze tam, kde byly známy (platí pro schéma i silkscreeny). Jediná konstrukční změna je přidání tranzistoru *Q1*, protože proudová zatížitelnost výstupu *LM311* je pouze *50mA*, což stačí na malé relé, avšak chci otevřít možnost použít automobilní relé, jehož pozitivní vlastností je že se nerozteče při trvalém sepnutí. Bohužel si dokáže vzít až *140mA*. PNP tranzistor používám z toho důvodu, aby nebylo nutno měnit logiku spínání. *LM311* sama o sobě spíná v záporném pólu, pokud se aktivuje spínání tranzistorem, spíná se v kladném pólu, vlastní *LM311* spíná pouze bázový proud tranzistoru *Q1*. Použití tohoto tranzistoru je optional a konfiguruje se při osazení propojkami *J4*, *J5* a *J6*. Původní zapojení, tj. bez tranzistoru *Q1*, se aktivuje neosazením *Q1* a *R6*, dále se spojí *J5* a *J6*. Propojka *J4* zůstává rozpojená. Pro použití tranzistoru *Q1* (například při použití automobilního relé) se osadí *R6*, *Q1* a propojí se propojka *J4*. Propojky *J5* a *J6* zůstávají rozpojené.
+
+## Použití pojmenovaných signálů a propojovací definice
+
+Použití pojmenovaných signálů umožňuje rozdělit schéma do funkčních bloků a tak jej zpřehlednit. Separátní definice připojovacích míst k signálům umožňuje snadno měnit pinout jednotlivých konektorů s ohledem na situaci na desce, neb docházelo k optimalizaci na snadnou výrobu a minimální cenu desky. Dále takový postup vytváří přehledný pinout všech použitých konektorů na jediném místě dokumentace, což opět poslouží přehlednosti.
+
+## Vlastní návrh desky, možné problémy, prokovy
+
+Vlastní návrh desky je proveden tak, aby byl výrobně jednoduchý. Desku lze nechat vyrobit jak s prokovy tak bez nich. V obou případech lze za slabé místo považovat kondenzátory *C1* a *C2*, kde je jeden z pólů přístupný do rozlité země (vedení *ACS0*) pouze přes prokov. Vzhledem k zátěži celého pomocného zdroje řádově ve stovkách mA (a z toho plynoucích cirkulačních proudů maximálně ve stovkách mA) to nepovažuji za problém. Větší problém nastává při pájení *C1* a *C2* do desky bez prokovů, kde nelze pájet z horní strany kvůli překrytí vrstvý pouzdrem součástky. Pro tento případ je na spodní straně připravena rozlitá plocha mědi, kdy lze provést propojení s vrchní stranou (stranou součástek) pomocí vývodů jiných součástek, případně na vhodném místě navrtat via.
+
+Desku lze též vyrobit svépomocí, kdy se strana spojů vyrobí například metodou *toner transfer*, přičemž horní strana obsahuje toliko rozlitou měď (s vyjímkou jednoho jumperu, který lze ignorovat, viz níže), čili před leptáním se vykryjí problematická místa (pod pojistkami a pod částmi konektorů) lakýrnickou páskou, celou horní strana se poté přestříká leptuvzdorným lakem a po zaschnutí se odstraní lakýrnická páska. Pro spodní stranu se použije buď metoda toner transfer, nebo fotocesta. V případě toner transferu doporučuji začít spodní stranou, v případě fotocesty doporučuji obrácený postup.  Po odleptání a odvrtání ze spodní strany se z horní  strany následně odstraní měděná plocha v okolí děr buď odfrézováním, nebo zcela jednoduše pomocí mělkého odvrtání tlustým vrtákem. Neodvrtávají se místa, kde je součástka spojena se zemní plochou. V těchto místech se potom pájí z obou stran. Problémem jednoduché výroby je jumper *J4*, který  je ze stramy součástek a při prostém ponechání měděné vrstvy jednoduše nebude existovat. Nepovažuji to však za problém, protože konfigurace se provádí při osazení a později ji již není možné změnit, čili pokud se osazuje *Q1*, potom se neodfrézuje/neodvrtá měděná vrstva kolem anody *D8* a tato se připájí z obou stran. *J6* a *J5* se potom neosazuje. V opačném případě se okolí anody *D8* odfrézuje, *Q1* a *R6* se neosadí, *D8* se zapájí jen z jedné strany a propojí se *J6* a *J5*.
+
+## Proč není na desce relé
+
+Protože otevřenost variabilitě, protože míním použít automobilní relé, které má vlastní držák a vývody na fastonech, v neposlední řadě proto, že se tím zmenší deska. Navíc to vytváří určitou variabilitu v zapojení předregulace, tj. lze například přepínat mezi dvoucestným usměrněním a násobičem, což otevírá možnost použít transformátor, který náhodou máte, namísto nákupu nějakého konkrétního. Celá deska je navrhovaná s ohledem na maximální možnou variabilitu, je zcela nevhodná pro seriovou výrobu včetně maloseriové, takže je pochopitelně nevhodná i pro strojové osazení.
+
+## Proč se používají svorkovnice
+
+V původní konstrukci byly fastony a osobně v nich vidím problém. Ten konektor chce značnou sílu pro zapojení i vypojení, přičemž tato deska byla navrhovaná nejen na maximální variabilitu, ale také na možnost snadné výroby, do které musím bohužel zahrnout nejen pochybné lamináty, ale též kuprokart a jiné hrůzy. Kombinace kuprokartu a fastonu znamená zlomenou desku. Spolehlivě. Svorkovnice ale funguje, protože se na desku příliš netlačí. Pochopitelně na jejím místě lze osadit víceméně leccos, co roztečí odpovídá. Svorkovnice jsou na desce dvě čtyřpólové a jedna dvoupólová. Spojit je všechny do jedné velké svorkovnice není dobrý nápad, toner transfer občas způsobí mírné ujetí rozměrů, což by pro tak velký pevný kus bylo fatální. Svorkovice je tedy rozdělena na tři logické části — propojení s řídící deskou zdroje, čili pomocné napájení *±12V* a *sense* vstup, svorkovnici pro připojení cívky relé a svorkovnici pro připojení pomocného transformátoru. Tato je zvolena čtyřpinová ze dvou důvodů. Především dvoupinové svorkovnice lze stohovat na čtyřpólové, takže tato volba znamená, že koupíte pět dvoupólových (a dostanete množstevní slevu, což by vás při nákupu jedné třípólové nepotkalo), dále transformátor může mít dvě oddělená sekundární vinutí, proto je střed vyveden dvakrát.
+
+## Použití pomocného transformátoru s jediným sekundárním vinutím
+
+Pokud máte pomocný transformátor jen s jediným vinutím bez vyvedeného středu, neosadí se *F1*, *D1*, *D4* a polovina svorkovnice *J3*. Dále je nutno zvětšit kapacity *C1* a *C2* na minimálně dvojnásobek.Transformátor potom pracuje v lichých půlvlnách do jedné větve a v sudých do druhé. Toto řešení však příliš nedoporučuji.
+
+## Závěr, varování
+
+Konstrukce není moje, desky nevyrábím, pokud si někde chcete zadat výrobu, je to váš problém, odmítám za to nést jakoukoliv odpovědnost. Chyby se stávají, to je realita. Vše si důkladně zkontrolujte a rozmyslete před tím, než začnete desku vyrábět. 
+
